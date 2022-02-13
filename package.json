@@ -1,0 +1,24 @@
+{
+  "name": "fullstack-cinema",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "postinstall": "concurrently npm:install:*",
+    "install:cinema": "cd cinema-ws && npm install",
+    "install:subs": "cd subscription-ws && npm install",
+    "install:client": "cd client && npm install",
+    "start": "concurrently -p \"[{time} |{name}]\" -t HH:mm:ss -n \" \" -c red,green,blue npm:start:*",
+    "start:cinema": "cd cinema-ws && npm start",
+    "start:subs": "cd subscription-ws && npm start",
+    "start:client": "cd client && npm start",
+    "dev": "concurrently -p \"[{time} |{name}]\" -t HH:mm:ss -n \" \" -c red,green,blue npm:dev:*",
+    "dev:cinema": "cd cinema-ws && npm run dev",
+    "dev:subs": "cd subscription-ws && npm run dev",
+    "dev:client": "cd client && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0"
+  },
+  "author": "Ido Hadad",
+  "license": "GPL-3.0-or-later"
+}
