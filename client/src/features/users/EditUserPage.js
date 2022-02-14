@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useField } from '../../app/hooks';
 import Status from '../../app/status';
-import { PermissionsForm, usePermissionsForm } from './UserPermissionsForm';
 import { fetchUsers, selectUserById, updateUser } from './usersSlice';
 import { Button, Alert } from 'react-bootstrap';
 import LoadingButton from '../../app/LoadingButton';

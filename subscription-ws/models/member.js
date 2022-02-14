@@ -20,7 +20,7 @@ memberSchema.set('toJSON', {
 memberSchema.pre('findOneAndDelete', async function () {
   const memberId = this.getQuery()._id;
 
-  const deleted = await Subscription.findOneAndDelete({ memberId });
+  await Subscription.findOneAndDelete({ memberId });
 });
 
 // memberSchema.post('save', async function () {

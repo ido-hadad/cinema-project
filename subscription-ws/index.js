@@ -1,8 +1,7 @@
-const http = require('http');
 const mongoose = require('mongoose');
+const http = require('http');
 const config = require('./utils/config');
-const app = require('./app');
-const { initializeDatabase } = require('./BL/dbInit');
+const shouldInitialize = require('./BL/shouldInit');
 
 (async () => {
   try {
@@ -14,12 +13,18 @@ const { initializeDatabase } = require('./BL/dbInit');
   }
 
   try {
-    await initializeDatabase();
+    // model imports must not be before collection check
+    if (await shouldInitialize()) {
+      const initializeDatabase = require('./BL/dbInit');
+      await initializeDatabase();
+    }
+    const app = require('./app');
     const server = http.createServer(app);
     server.listen(config.PORT, () => {
       console.log(`Server is listening on port ${config.PORT}`);
     });
   } catch (error) {
     console.log(error);
+    await mongoose.disconnect();
   }
 })();

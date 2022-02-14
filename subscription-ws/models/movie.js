@@ -13,7 +13,7 @@ const movieSchema = new mongoose.Schema({
 movieSchema.pre('findOneAndDelete', { query: true, document: true }, async function () {
   const movieId = this.getQuery()._id;
 
-  const deleted = await Subscription.updateMany({}, { $pull: { movies: { movieId } } });
+  await Subscription.updateMany({}, { $pull: { movies: { movieId } } });
 });
 
 movieSchema.set('toJSON', {

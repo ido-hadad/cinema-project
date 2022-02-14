@@ -21,7 +21,7 @@ function ViewMoviePage() {
     dispatch(fetchMovies());
     dispatch(fetchSubscriptions());
     dispatch(fetchMembers());
-  }, []);
+  }, [dispatch]);
 
   if (fetchStatus === Status.Loading) return <LoadingSpinner />;
   if (fetchStatus === Status.Failed) {

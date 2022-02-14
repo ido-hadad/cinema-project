@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Form, Pagination } from 'react-bootstrap';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,13 +13,9 @@ import {
   movieFilterChanged,
   moviePageChanged,
   moviePageSizeChange,
-  selectFilteredMovies,
   selectFilteredMoviesPage,
-  selectFilteredMoviesTotal,
   selectMovieFilter,
-  selectMovieFilterPage,
   selectMovieFilterPageSize,
-  selectTotalPages,
 } from '../filters/filtersSlice';
 import { fetchMembers } from '../members/membersSlice';
 import { fetchSubscriptions } from '../subscriptions/subscriptionsSlice';
@@ -30,8 +26,8 @@ import { fetchMovies } from './moviesSlice';
 function AllMoviesPage() {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { movies, currentPage, totalPages } = useSelector(selectFilteredMoviesPage);
-  const foundTotal = useSelector(selectFilteredMoviesTotal);
+  const { movies, currentPage, totalPages, pageSize } = useSelector(selectFilteredMoviesPage);
+  // const foundTotal = useSelector(selectFilteredMoviesTotal);
   const movieFilter = useSelector(selectMovieFilter);
   const fetchStatus = useSelector((state) => state.movies.status);
   const fetchError = useSelector((state) => state.movies.error);
@@ -42,29 +38,31 @@ function AllMoviesPage() {
     dispatch(fetchSubscriptions());
 
     dispatch(movieFilterChanged(searchParams.get('q') ?? ''));
+    dispatch(moviePageSizeChange(searchParams.get('size')));
     dispatch(moviePageChanged(searchParams.get('page')));
   }, []);
 
   useEffect(() => {
     const params = Object.fromEntries(searchParams.entries());
     params.q = movieFilter;
+    params.page = currentPage;
+    params.size = pageSize;
+    if (currentPage === 1) delete params.page;
     if (!movieFilter) delete params.q;
 
     setSearchParams(params);
-  }, [movieFilter]);
+  }, [movieFilter, pageSize, currentPage]);
 
+  if (fetchStatus === Status.Idle) return null;
   if (fetchStatus === Status.Loading) return <LoadingSpinner />;
   if (fetchStatus === Status.Failed) {
     return <PageLoadError error={fetchError.message} />;
   }
 
   const selectPage = (page) => {
-    const params = Object.fromEntries(searchParams.entries());
-    params.page = page;
-    if (page === 1) delete params.page;
-    setSearchParams(params);
     dispatch(moviePageChanged(page));
   };
+
   const renderedMovies = movies.map((movie) => <MovieItem key={movie.id} movie={movie} />);
 
   return (
@@ -115,17 +113,29 @@ function AllMoviesPage() {
 
 const PageList = ({ length, current, onClick, ...props }) => {
   if (length <= 0) return null;
+
   const diff = 2;
-  let start = Math.max(current - diff, 1);
-  let end = Math.min(current + diff + (current - diff < 1 ? diff - current + 1 : 0), length);
-  const renderedPages = Array(end - start + 1)
+
+  const pivot = current > length ? length : current < 1 ? 1 : current;
+
+  let start = Math.max(pivot - diff, 1);
+  let end = Math.min(pivot + diff + (pivot - diff < 1 ? diff - pivot + 1 : 0), length);
+  // console.log({ length, current, start, end, pivot });
+
+  const adjacentPages = Array(end - start + 1)
     .fill(start)
     .map((v, i) => (
       <Pagination.Item key={v + i} active={current === v + i} onClick={() => onClick(v + i)}>
         {v + i}
       </Pagination.Item>
     ));
-  return <Pagination {...props}>{renderedPages}</Pagination>;
+  return (
+    <Pagination {...props}>
+      {current > 1 && <Pagination.First onClick={() => onClick(1)} />}
+      {adjacentPages}
+      {current < length && <Pagination.Last onClick={() => onClick(length)} />}
+    </Pagination>
+  );
 };
 
 const MoviePageSizeForm = ({ ...props }) => {
@@ -137,13 +147,12 @@ const MoviePageSizeForm = ({ ...props }) => {
       {...props}
       onChange={(e) => {
         dispatch(moviePageSizeChange(e.target.value));
-        console.log(e.value);
       }}
       value={pageSize}
     >
       <option value={10}>10</option>
       <option value={20}>20</option>
-      <option value={50}>50</option>
+      <option value={30}>30</option>
     </Form.Select>
   );
 };

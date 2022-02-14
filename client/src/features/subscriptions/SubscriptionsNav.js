@@ -1,34 +1,31 @@
 import React from 'react';
 import { Container, Nav } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
 import { NavLink, Outlet } from 'react-router-dom';
-import { hasPermission, Permissions } from '../../app/permissions';
-import { selectCurrentUser } from '../login/loginSlice';
+import { Permissions } from '../../app/permissions';
+import Protected from '../../app/Protected';
 
 function SubscriptionsNav() {
-  const user = useSelector(selectCurrentUser);
   return (
     <>
       <div className="bg-dark-2 mb-3">
         <Container>
           <Nav variant="tabs" className="my-tabs" defaultActiveKey="/subs">
-            {hasPermission(user, Permissions.ViewSubscription) && (
+            <Protected permission={Permissions.ViewSubscription} hide>
               <Nav.Item>
                 <Nav.Link as={NavLink} to="/subs" end>
                   All Members
                 </Nav.Link>
               </Nav.Item>
-            )}
+            </Protected>
 
-            {hasPermission(user, Permissions.CreateSubscription) && (
+            <Protected permission={Permissions.CreateSubscription} hide>
               <Nav.Item>
                 <Nav.Link as={NavLink} to="/subs/create/">
                   Add Member
                 </Nav.Link>
               </Nav.Item>
-            )}
+            </Protected>
           </Nav>
-          {/* <h1>Member Subscriptions</h1> */}
         </Container>
       </div>
       <Container>

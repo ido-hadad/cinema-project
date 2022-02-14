@@ -1,4 +1,6 @@
+const path = require('path');
 const JsonDbCollection = require('./JsonDbCollection');
+const config = require('../utils/config');
 
 class UserPermission extends JsonDbCollection {
   objectToCollectionItem(obj) {
@@ -25,4 +27,4 @@ class UserPermission extends JsonDbCollection {
   }
 }
 
-module.exports = new UserPermission('db/permissions.json');
+module.exports = new UserPermission(path.join(config.DB_FOLDER, 'permissions.json'));

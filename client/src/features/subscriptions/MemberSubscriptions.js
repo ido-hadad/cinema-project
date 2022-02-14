@@ -77,13 +77,15 @@ const MemberSubscriptionItem = ({ memberId, sub }) => {
           year: 'numeric',
         })}
       </div>
-      <LoadingButton
-        className={`remove-btn p-0 fs-5 ${isLoading ? 'opacity-100 text-black' : ''}`}
-        isLoading={isLoading}
-        onClick={() => handleRemoveSub()}
-      >
-        <i className="fa fa-minus-circle" aria-hidden="true"></i>
-      </LoadingButton>
+      <Protected permission={Permissions.DeleteSubscription} hide>
+        <LoadingButton
+          className={`remove-btn p-0 fs-5 ${isLoading ? 'opacity-100 text-black' : ''}`}
+          isLoading={isLoading}
+          onClick={() => handleRemoveSub()}
+        >
+          <i className="fa fa-minus-circle" aria-hidden="true"></i>
+        </LoadingButton>
+      </Protected>
     </div>
   );
 };

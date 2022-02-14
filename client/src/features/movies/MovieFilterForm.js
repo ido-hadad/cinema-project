@@ -7,10 +7,12 @@ function MovieFilterForm(props) {
   const dispatch = useDispatch();
   const filter = useSelector(selectMovieFilter);
 
+  const handleChange = (e) => dispatch(movieFilterChanged(e.target.value));
+
   return (
     // <>
 
-    <Form {...props}>
+    <div {...props}>
       <Form.Group as={Row} controlId="movieFilter">
         {/* <Form.Label column className="me-2" xs="auto">
           Find movie
@@ -21,11 +23,11 @@ function MovieFilterForm(props) {
             type="search"
             value={filter}
             placeholder="Search.."
-            onChange={(e) => dispatch(movieFilterChanged(e.target.value))}
+            onChange={handleChange}
           ></Form.Control>
         </Col>
       </Form.Group>
-    </Form>
+    </div>
     // </>
   );
 }

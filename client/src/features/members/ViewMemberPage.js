@@ -22,7 +22,7 @@ function ViewMemberPage() {
     dispatch(fetchMovies());
     dispatch(fetchMembers());
     dispatch(fetchSubscriptions());
-  }, []);
+  }, [dispatch]);
 
   if (fetchStatus === Status.Loading) return <LoadingSpinner />;
   if (fetchStatus === Status.Failed) {

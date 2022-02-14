@@ -1,12 +1,10 @@
-const mongoose = require('mongoose');
-const config = require('../utils/config');
 const Member = require('../models/member');
 const Movie = require('../models/movie');
 const usersService = require('../services/usersService');
 const moviesService = require('../services/moviesService');
 const Subscription = require('../models/subscription');
 
-const initMemberCollection = async () => {
+async function initMemberCollection() {
   console.log('initializing Member collection..');
   await Member.deleteMany();
 
@@ -18,8 +16,9 @@ const initMemberCollection = async () => {
   }));
 
   await Member.insertMany(members);
-};
-const initMovieCollection = async () => {
+}
+
+async function initMovieCollection() {
   console.log('initializing Movie collection..');
   await Movie.deleteMany();
 
@@ -32,24 +31,13 @@ const initMovieCollection = async () => {
   }));
 
   await Movie.insertMany(movies);
-};
+}
 
-const initSubscriptionCollection = async () => {
+async function initSubscriptionCollection() {
   await Subscription.deleteMany();
-};
-
-async function shouldInitialize() {
-  const collections = await mongoose.connection.db.listCollections().toArray();
-  const collectionNames = collections.map((col) => col.name);
-  if (config.RESET_DB_ON_STARTUP) return true;
-
-  return [Movie.collection.name, Member.collection.name].some(
-    (col) => !collectionNames.includes(col)
-  );
 }
 
 async function initializeDatabase() {
-  if (!(await shouldInitialize())) return;
   const initializers = [
     initMemberCollection(),
     initMovieCollection(),
@@ -59,4 +47,4 @@ async function initializeDatabase() {
   await Promise.all(initializers);
 }
 
-module.exports = { initializeDatabase };
+module.exports = initializeDatabase;

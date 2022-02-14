@@ -27,7 +27,6 @@ function ToastItem({ id }) {
           <i className="fa fa-exclamation-circle me-2 text-danger" aria-hidden="true"></i>
         )}
         <strong className="me-auto">{toast.title}</strong>
-        {/* <small className="text-muted">2 seconds ago</small> */}
       </Toast.Header>
       <Toast.Body>{toast.message}</Toast.Body>
     </Toast>

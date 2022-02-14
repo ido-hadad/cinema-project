@@ -12,7 +12,7 @@ const filtersSlice = createSlice({
   initialState,
   reducers: {
     movieFilterChanged: (state, action) => {
-      state.movie = action.payload;
+      state.movie = (action.payload ?? '').toString();
       state.moviePage = 1;
     },
     moviePageChanged: (state, action) => {
@@ -24,7 +24,13 @@ const filtersSlice = createSlice({
       }
     },
     moviePageSizeChange: (state, action) => {
-      state.moviePageSize = action.payload;
+      const size = parseInt(action.payload);
+      state.moviePage = 1;
+      if (isNaN(size) || size == null) {
+        state.moviePageSize = 20;
+      } else {
+        state.moviePageSize = size;
+      }
     },
   },
 });
@@ -39,9 +45,10 @@ export const selectFilteredMovies = createSelector(
   selectAllMovies,
   selectMovieFilter,
   (movies, filter) => {
+    const filterLower = filter.toLowerCase();
     return filter === ''
       ? movies
-      : movies.filter((movie) => movie.name?.toLowerCase().includes(filter.toLowerCase()));
+      : movies.filter((movie) => movie.name?.toString().toLowerCase().includes(filterLower));
   }
 );
 
@@ -61,6 +68,7 @@ export const selectFilteredMoviesPage = createSelector(
       movies: matchedMovies,
       currentPage,
       totalPages: pages,
+      pageSize: size,
     };
   }
 );

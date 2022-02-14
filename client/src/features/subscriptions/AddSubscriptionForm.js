@@ -13,14 +13,14 @@ function AddSubscriptionForm({ memberId }) {
   const dispatch = useDispatch();
   const [status, setStatus] = useState(Status.Idle);
   const unwatchedMovies = useSelector((state) => selectUnwatchedMoviesByMemberId(state, memberId));
-  const movie = useField('', '');
+  const movieSelect = useField();
   const watchedAt = useField('date', dateToInput(new Date()));
 
   useEffect(() => {
-    if (movie.value === '' && unwatchedMovies.length > 0) {
-      movie.onChange({ target: { value: unwatchedMovies[0].id } });
+    if (movieSelect.value === '' && unwatchedMovies.length > 0) {
+      movieSelect.setValue(unwatchedMovies[0].id);
     }
-  }, [unwatchedMovies, movie]);
+  }, [unwatchedMovies, movieSelect]);
 
   const movieOptions = unwatchedMovies.map((movie) => (
     <option key={movie.id} value={movie.id}>
@@ -33,13 +33,13 @@ function AddSubscriptionForm({ memberId }) {
     setStatus(Status.Loading);
     try {
       const subscription = {
-        movieId: movie.value,
+        movieId: movieSelect.value,
         date: watchedAt.value,
       };
       await dispatch(addSubscription({ memberId, subscription })).unwrap();
-      movie.onChange({ target: { value: '' } });
+      movieSelect.setValue('');
     } catch (error) {
-      //TODO: notify
+      // skip
     }
     setStatus(Status.Idle);
   };
@@ -51,7 +51,7 @@ function AddSubscriptionForm({ memberId }) {
       <Form onSubmit={handleSubmit}>
         <Row className="align-items-center my-3">
           <Col xs={5}>
-            <Form.Select {...movie} aria-label="Select movie" size="sm">
+            <Form.Select {...movieSelect} aria-label="Select movie" size="sm">
               {movieOptions}
             </Form.Select>
           </Col>

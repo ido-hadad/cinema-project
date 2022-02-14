@@ -1,4 +1,6 @@
+const path = require('path');
 const JsonDbCollection = require('./JsonDbCollection');
+const config = require('../utils/config');
 
 class UserInfo extends JsonDbCollection {
   objectToCollectionItem(obj) {
@@ -32,4 +34,4 @@ class UserInfo extends JsonDbCollection {
   }
 }
 
-module.exports = new UserInfo('db/users.json');
+module.exports = new UserInfo(path.join(config.DB_FOLDER, 'users.json'));

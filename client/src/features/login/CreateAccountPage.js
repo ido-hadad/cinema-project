@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useField } from '../../app/hooks';
 import { Alert, Container } from 'react-bootstrap';
 import { register } from './loginSlice';
 import Status from '../../app/status';
@@ -64,13 +63,25 @@ function CreateAccountPage() {
           >
             {() => (
               <Form>
-                <TextInput className="mb-3" name="username" label="Username" />
-                <TextInput className="mb-3" name="password" type="password" label="Password" />
+                <TextInput
+                  className="mb-3"
+                  name="username"
+                  label="Username"
+                  autoComplete="username"
+                />
+                <TextInput
+                  className="mb-3"
+                  name="password"
+                  type="password"
+                  label="Password"
+                  autoComplete="new-password"
+                />
                 <TextInput
                   className="mb-3"
                   name="passwordConfirmation"
                   type="password"
                   label="Password confirmation"
+                  autoComplete="new-password"
                 />
                 <LoadingButton
                   type="submit"

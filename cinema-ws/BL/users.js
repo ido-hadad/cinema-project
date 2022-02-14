@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 const UserInfo = require('../DAL/userInfo');
 const UserPermission = require('../DAL/userPermission');
 const User = require('../models/user');
@@ -118,22 +119,12 @@ const getNonAdminUsers = async () => {
   return users.filter((user) => !isAdminUsername(user.username));
 };
 
-const shouldInitialize = async () => {
-  if (config.RESET_USERS_ON_STARTUP) return true;
-
-  const collections = await mongoose.connection.db
-    .listCollections({ name: User.collection.name })
-    .toArray();
-
-  if (collections.length === 0) return true;
-
-  return (await UserInfo.shouldInitialize()) || UserPermission.shouldInitialize();
-};
-
 const initializeDatabase = async () => {
-  if (!(await shouldInitialize())) return;
-
   console.log('initializing..');
+
+  if (!fs.existsSync(config.DB_FOLDER)) {
+    fs.mkdirSync(config.DB_FOLDER);
+  }
 
   await UserInfo.init();
   await UserPermission.init();
@@ -143,7 +134,7 @@ const initializeDatabase = async () => {
     username: config.ADMIN_USERNAME,
     firstName: 'Administrator',
     permissions: Object.values(Permissions),
-    sessionTimeout: 0,
+    sessionTimeout: 30,
   });
   if (await setUserPassword(config.ADMIN_USERNAME, config.ADMIN_PASSWORD))
     console.log(

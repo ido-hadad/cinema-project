@@ -3,14 +3,8 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import AppNavbar from './app/AppNavbar';
-import { loadUserToken, saveUserToken } from './app/util';
-import {
-  login,
-  logout,
-  selectCurrentUser,
-  setServiceToken,
-  userAuthenticated,
-} from './features/login/loginSlice';
+import { loadUserToken } from './app/util';
+import { selectCurrentUser, userAuthenticated } from './features/login/loginSlice';
 import WelcomePage from './features/login/WelcomePage';
 import AddMemberPage from './features/members/AddMemberPage';
 import EditMemberPage from './features/members/EditMemberPage';
@@ -25,13 +19,9 @@ import AllUsersPage from './features/users/AllUsersPage';
 import EditUserPage from './features/users/EditUserPage';
 import UsersNav from './features/users/UsersNav';
 
-import { Container } from 'react-bootstrap';
 import LoginPage from './features/login/LoginPage';
 import CreateAccountPage from './features/login/CreateAccountPage';
 
-import { Permissions } from './app/permissions';
-
-import Protected from './app/Protected';
 import ViewMoviePage from './features/movies/ViewMoviePage';
 import ViewMemberPage from './features/members/ViewMemberPage';
 import ToastList from './features/notifications/ToastList';

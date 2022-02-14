@@ -17,6 +17,7 @@ function AllUsersPage() {
     dispatch(fetchUsers());
   }, [dispatch]);
 
+  if (fetchStatus === Status.Idle) return null;
   if (fetchStatus === Status.Loading) return <LoadingSpinner />;
   if (fetchStatus === Status.Failed) {
     return <PageLoadError error={fetchError.message} />;

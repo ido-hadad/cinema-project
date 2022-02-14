@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const Member = require('../models/member');
 const Subscription = require('../models/subscription');
 
@@ -10,7 +9,7 @@ const createSubscription = async (memberId, movieId, date) => {
   let memberSubs = await Subscription.findOne({ memberId });
   if (!memberSubs) {
     const existingMember = await Member.findById(memberId);
-    if (!existingMember) return;
+    if (!existingMember) return null;
 
     memberSubs = await Subscription.create({ memberId });
   }
